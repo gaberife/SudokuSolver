@@ -3,7 +3,6 @@ import java.io.IOException;
 public class Sudoku {
     public static int SIZE= 9;
     public static int game[][];
-
     public static int convertToInt(String line, int column)  throws IOException {
         char ch = line.charAt(column);
         int number = Character.getNumericValue(ch);
