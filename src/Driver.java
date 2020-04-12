@@ -13,9 +13,9 @@ public class Driver {
         File confirmedFile;
         try {
             confirmedFile = new File(String.valueOf(check(fileName))); // Variable that represents the file path
-            init(confirmedFile); //Initializes the data into a table
-            print();
+            init(confirmedFile);
             solve();
+            print();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -45,10 +45,8 @@ public class Driver {
 
     public static void init(File file) throws IOException {
         BufferedReader line = new BufferedReader(new FileReader(file));
-        //Isolates the String first line which shows N number of cities
-        Sudoku.game = new int[Sudoku.numRow][Sudoku.numCol];
-        for (int row = 0; row < Sudoku.numRow; row++) {
-            //Reads String line and removes all non numeric values from it
+        Sudoku.game = new int[Sudoku.SIZE][Sudoku.SIZE];
+        for (int row = 0; row < Sudoku.SIZE; row++) {
             String test = line.readLine().replaceAll("[^0-9.]", "");
             for (int col = 0; col < test.length(); col++) {
                 Sudoku.game[row][col] = Sudoku.convertToInt(test, col);
@@ -56,20 +54,28 @@ public class Driver {
         }
     }
 
-    public static void solve(){
-        for(int row = 0; row < Sudoku.numCol; row++) {
-            for(int col = 0; col < Sudoku.numCol; col++) {
-                if (!Sudoku.checkZero(row, col))
-                    System.out.print(Sudoku.returnNonZero(row, col) + " ");
-                else
-                    System.out.print("  ");
-            }
-            System.out.println();
-        }
+    public static void print(){
+        System.out.println("\nThis is the current state of the game.\n");
+        Sudoku.printCurrentGame(Sudoku.game);
     }
 
-    public static void print(){
-        System.out.println("This is the current state of the game.\n");
-        Sudoku.printCurrentGame(Sudoku.game);
+    public static boolean solve() {
+        for (int row = 0; row < Sudoku.SIZE; row++) {
+            for (int col = 0; col < Sudoku.SIZE; col++) {
+                if (Sudoku.game[row][col] == 0) {
+                    for (int number = 1; number <= Sudoku.SIZE; number++) {
+                        if (Sudoku.check(row, col, number)) {
+                            Sudoku.game[row][col] = number;
+                            if (solve())
+                                return true;
+                            else
+                                Sudoku.game[row][col] = 0;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
